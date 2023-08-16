@@ -1,0 +1,15 @@
+C:\GIT\lzravr\clean-architecture\Bookify\Bookify.Application\bin\Debug\net7.0\Bookify.Application.deps.json
+C:\GIT\lzravr\clean-architecture\Bookify\Bookify.Application\bin\Debug\net7.0\Bookify.Application.dll
+C:\GIT\lzravr\clean-architecture\Bookify\Bookify.Application\bin\Debug\net7.0\Bookify.Application.pdb
+C:\GIT\lzravr\clean-architecture\Bookify\Bookify.Application\bin\Debug\net7.0\Bookify.Domain.dll
+C:\GIT\lzravr\clean-architecture\Bookify\Bookify.Application\bin\Debug\net7.0\Bookify.Domain.pdb
+C:\GIT\lzravr\clean-architecture\Bookify\Bookify.Application\obj\Debug\net7.0\Bookify.Application.csproj.AssemblyReference.cache
+C:\GIT\lzravr\clean-architecture\Bookify\Bookify.Application\obj\Debug\net7.0\Bookify.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\GIT\lzravr\clean-architecture\Bookify\Bookify.Application\obj\Debug\net7.0\Bookify.Application.AssemblyInfoInputs.cache
+C:\GIT\lzravr\clean-architecture\Bookify\Bookify.Application\obj\Debug\net7.0\Bookify.Application.AssemblyInfo.cs
+C:\GIT\lzravr\clean-architecture\Bookify\Bookify.Application\obj\Debug\net7.0\Bookify.Application.csproj.CoreCompileInputs.cache
+C:\GIT\lzravr\clean-architecture\Bookify\Bookify.Application\obj\Debug\net7.0\Bookify.Application.csproj.CopyComplete
+C:\GIT\lzravr\clean-architecture\Bookify\Bookify.Application\obj\Debug\net7.0\Bookify.Application.dll
+C:\GIT\lzravr\clean-architecture\Bookify\Bookify.Application\obj\Debug\net7.0\refint\Bookify.Application.dll
+C:\GIT\lzravr\clean-architecture\Bookify\Bookify.Application\obj\Debug\net7.0\Bookify.Application.pdb
+C:\GIT\lzravr\clean-architecture\Bookify\Bookify.Application\obj\Debug\net7.0\ref\Bookify.Application.dll

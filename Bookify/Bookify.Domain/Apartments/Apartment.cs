@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bookify.Domain.Appartments;
+namespace Bookify.Domain.Apartments;
 public sealed class Apartment : Entity
 {
     public Apartment(Guid id,

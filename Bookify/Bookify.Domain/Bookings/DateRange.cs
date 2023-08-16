@@ -17,4 +17,5 @@ public record DateRange
         }
 
         return new DateRange() { Start = start, End = end };
+    }
 }
