@@ -1,5 +1,6 @@
 ﻿using Bookify.Application.Abstractions.Clock;
 using Bookify.Application.Abstractions.Messaging;
+using Bookify.Application.Exceptions;
 using Bookify.Domain.Abstractions;
 using Bookify.Domain.Apartments;
 using Bookify.Domain.Bookings;
@@ -49,21 +50,35 @@ internal sealed class ReserveBookingCommandHandler : ICommandHandler<ReserveBook
 
         var duration = DateRange.Create(request.StartDate, request.EndDate);
 
+        // Race condition
+        // One thread could get that the booking is available and before it reserves it
+        // another thread asks if the same booking is available at the same time and get the same response
         if (await _bookingRepository.IsOverlappingAsync(apartment, duration, cancellationToken))
         {
             return Result.Failiure<Guid>(BookingErrors.Overlap);
         }
 
-        var booking = Booking.Reserve(
+        // SOLUTION - Optimistic Concurrency - uses a column in the DB that represents record version
+        // if version in memomory and in the DB are different the record has changed
+        // At UnitOfWork lvl we handle concurrency 
+        try
+        {
+            var booking = Booking.Reserve(
             apartment,
             user.Id,
             duration,
             _dateTimeProvider.UtcNow,
             _pricingService);
 
-        _bookingRepository.Add(booking);
-        await _unitOfWork.SaveChangesAsync();
+            _bookingRepository.Add(booking);
+            await _unitOfWork.SaveChangesAsync();
 
-        return booking.Id;
+            return booking.Id;
+        }
+        catch (ConcurrencyException)
+        {
+            return Result.Failiure<Guid>(BookingErrors.Overlap);
+        }
+
     }
 }
