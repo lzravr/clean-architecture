@@ -21,3 +21,7 @@
 /Bookify/Bookify.Presentation/obj
 /Bookify/obj/Docker
 /Bookify/Bookify.Api/bin/Debug/net7.0
+/Bookify/Bookify.Application/bin/Debug/net7.0/Bookify.Domain.dll
+/Bookify/Bookify.Application/bin/Debug/net7.0/Bookify.Domain.pdb
+/Bookify/Bookify.Domain/bin/Debug/net7.0/Bookify.Domain.dll
+/Bookify/Bookify.Domain/bin/Debug/net7.0/Bookify.Domain.pdb
