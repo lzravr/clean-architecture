@@ -22,12 +22,16 @@ if (app.Environment.IsDevelopment())
 
     app.AddMigrations();
 
+    // uncomment to seed the database
     //app.SeedData();
 }
 
 app.UseHttpsRedirection();
 
 app.UseCustomExceptionHandler();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
