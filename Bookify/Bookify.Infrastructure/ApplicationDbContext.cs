@@ -1,16 +1,27 @@
-﻿using Bookify.Application.Exceptions;
+﻿using Bookify.Application.Abstractions.Clock;
+using Bookify.Application.Exceptions;
 using Bookify.Domain.Abstractions;
 using Bookify.Domain.Users;
+using Bookify.Infrastructure.Outbox;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace Bookify.Infrastructure;
 public sealed class ApplicationDbContext : DbContext, IUnitOfWork
 {
+    private static readonly JsonSerializerSettings JsonSerializerSettings = new()
+    {
+        TypeNameHandling = TypeNameHandling.All
+    };
+
     private readonly IPublisher _publisher;
-    public ApplicationDbContext(DbContextOptions options, IPublisher publisher) : base(options)
+    private readonly IDateTimeProvider _dateTimeProvider;
+
+    public ApplicationDbContext(DbContextOptions options, IPublisher publisher, IDateTimeProvider dateTimeProvider) : base(options)
     {
         _publisher = publisher;
+        _dateTimeProvider = dateTimeProvider;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -25,14 +36,18 @@ public sealed class ApplicationDbContext : DbContext, IUnitOfWork
         // Saving changes is atomic, it will either fail or succeed
         try
         {
-            var result = await base.SaveChangesAsync(cancellationToken);
+            // transaction is completed, changes are saved
+            // publishing events trigger a new transaction which can fail and hance faile the SaveChangesAsync method
 
             // Publishing events is also atomic
             // WARNING:
             // If publishing failis it will fail the SaveChangesAsync method
             // however the base SaveChangesAsync method has succeeded and changes are already persisted in the DB
             // this causes inconsistency
-            await PublishDomainEventsAsync();
+
+            AddDomainEventsAsOutboxMessages();
+
+            var result = await base.SaveChangesAsync(cancellationToken);
 
             return result;
         }
@@ -43,7 +58,7 @@ public sealed class ApplicationDbContext : DbContext, IUnitOfWork
         
     }
 
-    private async Task PublishDomainEventsAsync()
+    private void AddDomainEventsAsOutboxMessages()
     {
         var domainEvents = ChangeTracker
             .Entries<IEntity>()
@@ -56,11 +71,13 @@ public sealed class ApplicationDbContext : DbContext, IUnitOfWork
 
                 return domainEvents;
             })
+            .Select(domainEvent => new OutboxMessage(
+                Guid.NewGuid(),
+                domainEvent.GetType().Name,
+                JsonConvert.SerializeObject(domainEvent, JsonSerializerSettings),
+                _dateTimeProvider.UtcNow))
             .ToList();
         
-        foreach (var domainEvent in domainEvents)
-        {
-            await _publisher.Publish(domainEvent);
-        }
+        AddRange(domainEvents);
     }
 }
