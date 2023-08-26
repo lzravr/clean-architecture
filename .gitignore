@@ -35,3 +35,9 @@
 /Bookify/bin/Debug
 /Bookify/Bookify.Application/obj/Debug/net7.0/Bookify.Application.csproj.FileListAbsolute.txt
 /Bookify/obj/Debug
+/Bookify.Application.UnitTests/bin/Debug/net7.0
+/Bookify.Application.UnitTests/obj
+/Bookify.ArchitectureTests/bin/Debug/net7.0
+/Bookify.ArchitectureTests/obj
+/Bookify.Domain.UnitTests/bin/Debug/net7.0
+/Bookify.Domain.UnitTests/obj
