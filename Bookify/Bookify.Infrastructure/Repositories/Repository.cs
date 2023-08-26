@@ -2,8 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace Bookify.Infrastructure.Repositories;
-internal abstract class Repository<T>
-    where T : Entity
+internal abstract class Repository<TEntity, TEntityId>
+    where TEntity : Entity<TEntityId>
+    where TEntityId : class
 {
     protected readonly ApplicationDbContext DbContext;
 
@@ -12,12 +13,12 @@ internal abstract class Repository<T>
         DbContext = dbContext;
     }
 
-    public async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<TEntity?> GetByIdAsync(TEntityId id, CancellationToken cancellationToken)
     {
-        return await DbContext.Set<T>().FirstOrDefaultAsync(_ => _.Id == id, cancellationToken);
+        return await DbContext.Set<TEntity>().FirstOrDefaultAsync(_ => _.Id == id, cancellationToken);
     }
 
-    public void Add(T entity)
+    public void Add(TEntity entity)
     {
         DbContext.Add(entity);
     }

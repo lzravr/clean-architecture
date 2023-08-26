@@ -1,15 +1,10 @@
 ﻿using Bookify.Domain.Abstractions;
 using Bookify.Domain.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bookify.Domain.Apartments;
-public sealed class Apartment : Entity
+public sealed class Apartment : Entity<ApartmentId>
 {
-    public Apartment(Guid id,
+    public Apartment(ApartmentId id,
                      Name name,
                      Description description,
                      Address address,

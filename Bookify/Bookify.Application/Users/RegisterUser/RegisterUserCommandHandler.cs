@@ -5,7 +5,7 @@ using Bookify.Domain.Users;
 
 namespace Bookify.Application.Users.RegisterUser;
 
-internal sealed class RegisterUserCommandHandler : ICommandHandler<RegisterUserCommand, Guid>
+internal sealed class RegisterUserCommandHandler : ICommandHandler<RegisterUserCommand, UserId>
 {
     private readonly IAuthenticationService _authenticationService;
     private readonly IUserRepository _userRepository;
@@ -21,7 +21,7 @@ internal sealed class RegisterUserCommandHandler : ICommandHandler<RegisterUserC
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<Guid>> Handle(
+    public async Task<Result<UserId>> Handle(
         RegisterUserCommand request,
         CancellationToken cancellationToken)
     {

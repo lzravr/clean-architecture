@@ -7,7 +7,7 @@ using Bookify.Domain.Bookings;
 using Bookify.Domain.Users;
 
 namespace Bookify.Application.Bookings.ReserveBooking;
-internal sealed class ReserveBookingCommandHandler : ICommandHandler<ReserveBookingCommand, Guid>
+internal sealed class ReserveBookingCommandHandler : ICommandHandler<ReserveBookingCommand, BookingId>
 {
     private readonly IUserRepository _userRepository;
     private readonly IApartmentRepository _apartmentRepository;
@@ -32,20 +32,20 @@ internal sealed class ReserveBookingCommandHandler : ICommandHandler<ReserveBook
         _dateTimeProvider = dateTimeProvider;
     }
 
-    public async Task<Result<Guid>> Handle(ReserveBookingCommand request, CancellationToken cancellationToken)
+    public async Task<Result<BookingId>> Handle(ReserveBookingCommand request, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
 
         if (user is null)
         {
-            return Result.Failiure<Guid>(UserErrors.NotFound);
+            return Result.Failiure<BookingId>(UserErrors.NotFound);
         }
 
         var apartment = await _apartmentRepository.GetByIdAsync(request.AppartmentId, cancellationToken);
 
         if (apartment is null)
         {
-            return Result.Failiure<Guid>(ApartmentErrors.NotFound);
+            return Result.Failiure<BookingId>(ApartmentErrors.NotFound);
         }
 
         var duration = DateRange.Create(request.StartDate, request.EndDate);
@@ -55,7 +55,7 @@ internal sealed class ReserveBookingCommandHandler : ICommandHandler<ReserveBook
         // another thread asks if the same booking is available at the same time and get the same response
         if (await _bookingRepository.IsOverlappingAsync(apartment, duration, cancellationToken))
         {
-            return Result.Failiure<Guid>(BookingErrors.Overlap);
+            return Result.Failiure<BookingId>(BookingErrors.Overlap);
         }
 
         // SOLUTION - Optimistic Concurrency - uses a column in the DB that represents record version
@@ -77,7 +77,7 @@ internal sealed class ReserveBookingCommandHandler : ICommandHandler<ReserveBook
         }
         catch (ConcurrencyException)
         {
-            return Result.Failiure<Guid>(BookingErrors.Overlap);
+            return Result.Failiure<BookingId>(BookingErrors.Overlap);
         }
 
     }

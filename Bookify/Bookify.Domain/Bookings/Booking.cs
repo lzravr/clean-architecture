@@ -2,14 +2,15 @@
 using Bookify.Domain.Apartments;
 using Bookify.Domain.Bookings.Events;
 using Bookify.Domain.Shared;
+using Bookify.Domain.Users;
 
 namespace Bookify.Domain.Bookings;
-public sealed class Booking : Entity
+public sealed class Booking : Entity<BookingId>
 {
     private Booking(
-        Guid id,
-        Guid apartmentId,
-        Guid userId,
+        BookingId id,
+        ApartmentId apartmentId,
+        UserId userId,
         DateRange duration,
         Money priceForPeriod,
         Money cleaningFee,
@@ -31,8 +32,8 @@ public sealed class Booking : Entity
 
     private Booking() { }
 
-    public Guid ApartmentId { get; private set; }
-    public Guid UserId { get; private set; }
+    public ApartmentId ApartmentId { get; private set; }
+    public UserId UserId { get; private set; }
     public DateRange Duration { get; private set; }
     public Money PriceForPeriod { get; private set; }
     public Money CleaningFee { get; private set; }
@@ -45,12 +46,12 @@ public sealed class Booking : Entity
     public DateTime? CompletedOnUtc { get; private set; }
     public DateTime? CanceledOnUtc { get; private set; }
 
-    public static Booking Reserve(Apartment apartment, Guid userId, DateRange duration, DateTime utcNow, PricingService pricingService)
+    public static Booking Reserve(Apartment apartment, UserId userId, DateRange duration, DateTime utcNow, PricingService pricingService)
     {
         var pricingDetails = pricingService.CalculatePrice(apartment, duration);
 
         var booking = new Booking(
-            Guid.NewGuid(),
+            BookingId.New(),
             apartment.Id,
             userId,
             duration,
